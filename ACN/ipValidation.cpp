@@ -33,7 +33,7 @@ vector<int> splitIp(string s)
     vector<int> result;
     int pos = 0;
 
-    while (s.length() >= pos)
+    while (s.length()+1 >= pos)
     {
         pos = s.find(".");
         result.push_back(stoi(s.substr(0, pos)));
@@ -65,7 +65,7 @@ int main()
 
     //'.' separated only
     for(int i=0;i<ip.length();i++){
-        if(ip[i]>'0' && ip[i] <= '9' || ip[i] == '.'){
+        if(ip[i]>='0' && ip[i] <= '9' || ip[i] == '.'){
             continue;
         }
         else{
@@ -85,6 +85,7 @@ int main()
     if (ipSplit.size() != 4)
     {
         cout << "Invalid size of IP\n";
+        cout << ipSplit[0] << endl<< ipSplit[1] << endl << ipSplit[2]<< endl << ipSplit[3] << endl; 
         return 0;
     }
     if (ipSplit[0] <= 0)
