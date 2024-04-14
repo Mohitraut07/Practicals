@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 class Jobs
@@ -9,45 +10,62 @@ public:
     int profit;
 };
 
-bool comp(Jobs j1,Jobs j2){
-    return (j1.profit>j2.profit);
-}
-
-int min(int a, int b){
-   return (a<b)?a:b;
+bool comp(Jobs j1, Jobs j2)
+{
+    return (j1.profit > j2.profit);
 }
 
 int main()
 {
-    Jobs jobs[] = {
-        {'a', 2, 100},
+    int n;
+    cout << "Enter the number of jobs: ";
+    cin >> n;
+
+    Jobs jobs[n];
+    for (int i = 0; i < n; i++)
+    {
+        cout << "Enter the job id: ";
+        cin >> jobs[i].id;
+        cout << "Enter the deadline: ";
+        cin >> jobs[i].deadLine;
+        cout << "Enter the profit: ";
+        cin >> jobs[i].profit;
+    }
+
+    sort(jobs, jobs + n, comp); // Sort jobs on profit
+    int jobSeq[n];             // Store result sequence
+    bool slot[n];              // To keep track of free time slot
+    for (int i = 0; i < n; i++)
+        slot[i] = false; // Initially all slots are free
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = min(n, jobs[i].deadLine) - 1; j >= 0; j--)
+        {
+            if (slot[j] == false)
+            {
+                jobSeq[j] = i;
+                slot[j] = true;
+                break;
+            }
+        }
+    }
+
+    cout << "Execution sequence: ";
+    for (int i = 0; i < n; i++)
+    {
+        if (slot[i])
+        {
+            cout << jobs[jobSeq[i]].id << " ";
+        }
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+       /* {'a', 2, 100},
         {'b', 2, 20},
         {'c', 1, 40},
         {'d', 3, 35},
-        {'e', 1, 25}};
-
-        int n=sizeof(jobs)/sizeof(jobs[0]);//size of jobs array
-
-        sort (jobs,jobs+n,comp);//sort jobs on profit
-        int jobSeq[n];//store result sequence
-        bool slot[n];// To keep track of free time slot
-        for(int i=0;i<n;i++)
-            slot[i] = false;//initially all slots are free
-        for(int i=0;i<n;i++){
-            for(int j=min(n,jobs[i].deadLine)-1;j>=0;j--){
-                if(slot[j] == false){
-                    jobSeq[j] = i;
-                    slot[j] = true;
-                    break;
-                }
-            }
-        }
-        // cout << jobs[0].profit << endl;
-        // cout << n << endl;
-        for(int i=0;i<n;i++){
-            if(slot[i]){
-                cout <<"Execution sequence: "<< jobs[jobSeq[i]] << endl;
-            }
-        }
-    return 0;
-}
+        {'e', 1, 25}*/
