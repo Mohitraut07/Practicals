@@ -35,7 +35,7 @@ void printSolution(int dist[][V]) {
 }
 
 int main() {
-    int graph[V][V] = {{0, 5, INF, 10}, {INF, 0, 3, INF}, {INF, INF, 0, 1}, {INF, INF, INF, 0}};
+    int graph[V][V] = {{0, 3, INF, 7}, {8, 0, 2, INF}, {5, INF, 0, 1}, {2, INF, INF, 0}};
     floydWarshall(graph);
     return 0;
 }
