@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 int validateVariableName(string input)
@@ -11,7 +12,8 @@ int validateVariableName(string input)
         return 0;
     }
 
-    if(!((input[0] >= 'a' && input[0] <= 'z') || (input[0] >= 'A' && input[0] <= 'Z') || (input[0] == '_'))) return 0;
+    if (!((input[0] >= 'a' && input[0] <= 'z') || (input[0] >= 'A' && input[0] <= 'Z') || (input[0] == '_')))
+        return 0;
 
     for (int i = 0; i < 64; i++)
     {
@@ -21,18 +23,24 @@ int validateVariableName(string input)
 
     for (int i = 1; i < input.length(); i++)
     {
-        if ((input[i] >= 'a' && input[i] <= 'z') || (input[i] >= 'A' && input[i] <= 'Z') || (input[i] == '_')) continue;
-        else if ((input[i] >= '0' && input[i] <= 9)) continue;
-        else return 0;
+        if (input[i] == ' ')
+            return 0;
+
+        if ((input[i] >= 'a' && input[i] <= 'z') || (input[i] >= 'A' && input[i] <= 'Z') || (input[i] == '_'))
+            continue;
+        else if ((input[i] >= '0' && input[i] <= 9))
+            continue;
+        else
+            return 0;
     }
     return 1;
 }
 
 int main()
 {
-    string input;
+    char input[100];
     cout << "INPUT VARIABLE NAME: ";
-    cin >> input;
+    cin.getline(input, 100, '\n');
     if (validateVariableName(input))
         cout << "Variable name is Valid!!";
     else
