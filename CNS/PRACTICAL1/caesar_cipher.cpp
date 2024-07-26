@@ -5,7 +5,7 @@ using namespace std;
 
 // Implement Caesar Cipher Method of Encryption
 // Implement Additive Caesar Cipher Method
-string encryption(string ipt, map<int, char> &upperCase, map<int, char> &lowerCase, int k = 3)
+string encryption(string ipt, map<int, char> upperCase, map<int, char> lowerCase, int k = 3)
 {
     string result;
     int ipt_key;
@@ -31,7 +31,7 @@ string encryption(string ipt, map<int, char> &upperCase, map<int, char> &lowerCa
     return result;
 }
 
-string decryption(string ipt, map<int, char> &lowerCase, map<int, char> &upperCase, int k = 3)
+string decryption(string ipt, map<int, char> lowerCase, map<int, char> upperCase, int k = 3)
 {
     string result;
     int ipt_key;
