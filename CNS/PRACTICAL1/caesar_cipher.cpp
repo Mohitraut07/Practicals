@@ -74,9 +74,9 @@ int main()
         upperCase[i] = 'A' + i;
     }
 
+    int choice;
     string result, input;
 
-    int choice;
     cout << "Enter 1 for Caesar Cipher and 2 for Additive Caesar Cipher" << endl;
     cin >> choice;
 
@@ -84,7 +84,7 @@ int main()
     {
     case 1:
         int choice1;
-        cout << "Welcome!" << endl
+        cout << "Welcome!!!" << endl
              << "Please enter your choice:" << endl
              << "1 for ENCRYPTION" << endl
              << "2 for DECRYPTION" << endl;
@@ -109,7 +109,7 @@ int main()
         break;
     case 2:
         int choice2, k;
-        cout << "Welcome!" << endl
+        cout << "Welcome!!!" << endl
              << "Please enter your choice:" << endl
              << "1 for ENCRYPTION" << endl
              << "2 for DECRYPTION" << endl;
