@@ -1,51 +1,39 @@
-// C++ program to implement Playfair Cipher
-
 #include <iostream>
+#include <cstring>
 using namespace std;
+
 #define SIZE 30
 
-// Function to convert the string to lowercase
-void toLowerCase(char plain[], int ps)
-{
-    int i;
-    for (i = 0; i < ps; i++) {
-        if (plain[i] > 64 && plain[i] < 91)
-            plain[i] += 32;
+void toLowerCase(char str[], int size) {
+    for (int i = 0; i < size; i++) {
+        if (str[i] >= 'A' && str[i] <= 'Z')
+            str[i] += 'a' - 'A';
     }
 }
 
-// Function to remove all spaces in a string
-int removeSpaces(char* plain, int ps)
-{
-    int i, count = 0;
-    for (i = 0; i < ps; i++)
-        if (plain[i] != ' ')
-            plain[count++] = plain[i];
-    plain[count] = '\0';
+int removeSpaces(char str[], int size) {
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        if (str[i] != ' ')
+            str[count++] = str[i];
+    }
+    str[count] = '\0';
     return count;
 }
 
-// Function to generate the 5x5 key square
-void generateKeyTable(char key[], int ks, char keyT[5][5])
-{
-    int i, j, k, flag = 0;
+void generateKeyTable(char key[], int ks, char keyT[5][5]) {
+    int dicty[26] = {0};
 
-    // a 26 character hashmap
-    // to store count of the alphabet
-    int dicty[26] = { 0 };
-    for (i = 0; i < ks; i++) {
+    for (int i = 0; i < ks; i++) {
         if (key[i] != 'j')
-            dicty[key[i] - 97] = 2;
+            dicty[key[i] - 'a'] = 2;
     }
+    dicty['j' - 'a'] = 1;
 
-    dicty['j' - 97] = 1;
-
-    i = 0;
-    j = 0;
-
-    for (k = 0; k < ks; k++) {
-        if (dicty[key[k] - 97] == 2) {
-            dicty[key[k] - 97] -= 1;
+    int i = 0, j = 0;
+    for (int k = 0; k < ks; k++) {
+        if (dicty[key[k] - 'a'] == 2) {
+            dicty[key[k] - 'a'] -= 1;
             keyT[i][j] = key[k];
             j++;
             if (j == 5) {
@@ -55,9 +43,9 @@ void generateKeyTable(char key[], int ks, char keyT[5][5])
         }
     }
 
-    for (k = 0; k < 26; k++) {
+    for (int k = 0; k < 26; k++) {
         if (dicty[k] == 0) {
-            keyT[i][j] = (char)(k + 97);
+            keyT[i][j] = 'a' + k;
             j++;
             if (j == 5) {
                 i++;
@@ -67,26 +55,17 @@ void generateKeyTable(char key[], int ks, char keyT[5][5])
     }
 }
 
-// Function to search for the characters of a digraph
-// in the key square and return their position
-void search(char keyT[5][5], char a, char b, int arr[])
-{
-    int i, j;
+void search(char keyT[5][5], char a, char b, int arr[]) {
+    if (a == 'j') a = 'i';
+    if (b == 'j') b = 'i';
 
-    if (a == 'j')
-        a = 'i';
-    else if (b == 'j')
-        b = 'i';
-
-    for (i = 0; i < 5; i++) {
-
-        for (j = 0; j < 5; j++) {
-
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
             if (keyT[i][j] == a) {
                 arr[0] = i;
                 arr[1] = j;
             }
-            else if (keyT[i][j] == b) {
+            if (keyT[i][j] == b) {
                 arr[2] = i;
                 arr[3] = j;
             }
@@ -94,84 +73,102 @@ void search(char keyT[5][5], char a, char b, int arr[])
     }
 }
 
-// Function to find the modulus with 5
-int mod5(int a) { return (a % 5); }
-
-// Function to make the plain text length to be even
-int prepare(char str[], int ptrs)
-{
-    if (ptrs % 2 != 0) {
-        str[ptrs++] = 'z';
-        str[ptrs] = '\0';
-    }
-    return ptrs;
+int mod5(int a) {
+    return a % 5;
 }
 
-// Function for performing the encryption
-void encrypt(char str[], char keyT[5][5], int ps)
-{
-    int i, a[4];
+int prepare(char str[], int size) {
+    if (size % 2 != 0) {
+        str[size++] = 'z';
+        str[size] = '\0';
+    }
+    return size;
+}
 
-    for (i = 0; i < ps; i += 2) {
-
+void encrypt(char str[], char keyT[5][5], int size) {
+    int a[4];
+    for (int i = 0; i < size; i += 2) {
         search(keyT, str[i], str[i + 1], a);
 
         if (a[0] == a[2]) {
             str[i] = keyT[a[0]][mod5(a[1] + 1)];
             str[i + 1] = keyT[a[0]][mod5(a[3] + 1)];
-        }
-        else if (a[1] == a[3]) {
+        } else if (a[1] == a[3]) {
             str[i] = keyT[mod5(a[0] + 1)][a[1]];
             str[i + 1] = keyT[mod5(a[2] + 1)][a[1]];
-        }
-        else {
+        } else {
             str[i] = keyT[a[0]][a[3]];
             str[i + 1] = keyT[a[2]][a[1]];
         }
     }
 }
 
-// Function to encrypt using Playfair Cipher
-void encryptByPlayfairCipher(char str[], char key[])
-{
-    char ps, ks, keyT[5][5];
+void decrypt(char str[], char keyT[5][5], int size) {
+    int a[4];
+    for (int i = 0; i < size; i += 2) {
+        search(keyT, str[i], str[i + 1], a);
 
-    // Key
+        if (a[0] == a[2]) {
+            str[i] = keyT[a[0]][mod5(a[1] + 4)];
+            str[i + 1] = keyT[a[0]][mod5(a[3] + 4)];
+        } else if (a[1] == a[3]) {
+            str[i] = keyT[mod5(a[0] + 4)][a[1]];
+            str[i + 1] = keyT[mod5(a[2] + 4)][a[1]];
+        } else {
+            str[i] = keyT[a[0]][a[3]];
+            str[i + 1] = keyT[a[2]][a[1]];
+        }
+    }
+}
+
+void playfairCipher(char str[], char key[], bool encryptFlag) {
+    int ks, ps;
+    char keyT[5][5];
+
     ks = strlen(key);
     ks = removeSpaces(key, ks);
     toLowerCase(key, ks);
 
-    // Plaintext
     ps = strlen(str);
     toLowerCase(str, ps);
     ps = removeSpaces(str, ps);
-
     ps = prepare(str, ps);
 
     generateKeyTable(key, ks, keyT);
 
-    encrypt(str, keyT, ps);
+    if (encryptFlag) {
+        encrypt(str, keyT, ps);
+    } else {
+        decrypt(str, keyT, ps);
+    }
 }
 
-// Driver code
-int main()
-{
+int main() {
     char str[SIZE], key[SIZE];
+    int choice;
 
-    // Key to be encrypted
-    strcpy(key, "Monarchy");
-    cout << "Key text: " << key << "\n";
+    cout << "Welcome!!!" << endl
+         << "Please enter your choice:" << endl
+         << "1 for ENCRYPTION" << endl
+         << "2 for DECRYPTION" << endl;
+    cin >> choice;
+    cin.ignore(); // To ignore the newline character left in the input buffer
 
-    // Plaintext to be encrypted
-    strcpy(str, "mosque");
-    cout << "Plain text: " << str << "\n";
+    cout << "Enter the input string: " << endl;
+    cin.getline(str, SIZE);
 
-    // encrypt using Playfair Cipher
-    encryptByPlayfairCipher(str, key);
+    cout << "Enter the required key: " << endl;
+    cin.getline(key, SIZE);
 
-    cout << "Cipher text: " << str << "\n";
+    if (choice == 1) {
+        playfairCipher(str, key, true);
+        cout << "Encrypted text: " << str << endl;
+    } else if (choice == 2) {
+        playfairCipher(str, key, false);
+        cout << "Decrypted text: " << str << endl;
+    } else {
+        cout << "Enter valid input" << endl;
+    }
 
     return 0;
 }
-
-// This code is contributed by aditya942003patil
