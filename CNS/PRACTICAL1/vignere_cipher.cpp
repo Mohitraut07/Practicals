@@ -23,11 +23,29 @@ string decryption(string input, char *key_str, int size)
     }
     return result;
 }
+// Function to print the Vigenere Table
+void vigenereTable() {
+    char t[26][26]; //26x26 array of characters
+    for(int i = 0; i < 26; i++) {
+        for(int j = 0; j < 26; j++) {
+            t[i][j] = 'A' + (i + j) % 26;
+        }
+    }
+    cout << "Vigenere Table:\n";
+    for (int i = 0; i < 26; ++i) {
+        for (int j = 0; j < 26; ++j) {
+            cout << t[i][j] << ' ';
+        } cout << '\n';
+    }
+}
 
 int main()
 {
     string result, key, input;
     int choice, size;
+
+    vigenereTable();
+
     cout << "Welcome!!!" << endl
          << "Please enter your choice:" << endl
          << "1 for ENCRYPTION" << endl
