@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "*.embeddedhtml": "html",
-        "string": "cpp"
+        "string": "cpp",
+        "__locale": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
